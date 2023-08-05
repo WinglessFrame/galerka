@@ -2,7 +2,7 @@ import type { Config } from "drizzle-kit";
 import "dotenv/config";
 
 if (!process.env.DB_CONNECTION_URL) {
-  throw new Error('DATABASE_URL is missing')
+  throw new Error('DB_CONNECTION_URL is missing')
 }
 
 export default {

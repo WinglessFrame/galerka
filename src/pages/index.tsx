@@ -3,11 +3,27 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { api } from "@/utils/api";
+import { useMemo } from "react";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useAuth } from "@/context/supabase";
 
 const Home: NextPage = () => {
   const example = api.example.getExample.useQuery();
+  const supabaseClient = useMemo(() => createClientComponentClient(), [])
+  const authValue = useAuth()
 
-  console.log("example:", example.data);
+  console.log({ authValue })
+  const onSignInClick = async () => {
+    const { data } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'github'
+    })
+    console.log({ data })
+  }
+
+  const onSignOutClick = () => {
+    void authValue.supabaseClient?.auth.signOut()
+  }
+
   return (
     <>
       <Head>
@@ -18,6 +34,8 @@ const Home: NextPage = () => {
 
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+          <button onClick={onSignInClick} className="bg-red-400 p-4 text-white  ">SIGN IN</button>
+          <button onClick={onSignOutClick} className="bg-blue-400 p-4 text-white  ">SIGN OUT</button>
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
           </h1>
@@ -81,3 +99,4 @@ const AuthShowcase: React.FC = () => {
     </div>
   );
 };
+

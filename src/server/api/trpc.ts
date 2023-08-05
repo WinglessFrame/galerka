@@ -19,10 +19,7 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { db } from "@/server/db";
 
 type CreateContextOptions = {
-  session:
-  // TODO replace with supabase session
-  // Session |
-  null;
+  supabase: SupabaseClient
 };
 
 /**
@@ -37,7 +34,7 @@ type CreateContextOptions = {
  */
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
-    session: null,
+    ...opts,
     db,
   };
 };
@@ -53,10 +50,11 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 
   // Get the session from the server using the getServerSession wrapper function
   // TODO make supabase session instead of next-auth
+  const supabase = createPagesServerClient(opts);
   // const session = await getServerAuthSession({ req, res });
 
   return createInnerTRPCContext({
-    session: null,
+    supabase: supabase,
   });
 };
 
@@ -70,6 +68,7 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { createPagesServerClient, SupabaseClient } from "@supabase/auth-helpers-nextjs";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

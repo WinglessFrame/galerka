@@ -6,7 +6,7 @@ import {
   // protectedProcedure,
 } from "@/server/api/trpc";
 
-import { example } from "@/db/schema";
+import { activities } from "@/db/schema";
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
@@ -18,11 +18,9 @@ export const exampleRouter = createTRPCRouter({
     }),
 
   getExample: publicProcedure.query(async ({ ctx }) => {
-    const examples = await ctx.db.select().from(example);
+    const { data } = await ctx.supabase.auth.getSession()
+    console.log({ user: data.session })
+    const examples = await ctx.db.select().from(activities);
     return examples
   }),
-
-  // getSecretMessage: protectedProcedure.query(() => {
-  //   return "you can now see this secret message!";
-  // }),
 });
