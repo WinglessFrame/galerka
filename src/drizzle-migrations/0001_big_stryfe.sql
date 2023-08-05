@@ -1,0 +1,1 @@
+ALTER TABLE "example" ADD COLUMN "name" text NOT NULL;

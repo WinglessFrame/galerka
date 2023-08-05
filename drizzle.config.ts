@@ -1,11 +1,12 @@
-// drizzle.config.ts
 import type { Config } from "drizzle-kit";
 import "dotenv/config";
 
+if (!process.env.DB_CONNECTION_URL) {
+  throw new Error('DATABASE_URL is missing')
+}
+
 export default {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  schema: ["./src/db/auth.ts", "./src/db/schema.ts"],
+  connectionString: process.env.DB_CONNECTION_URL,
+  schema: ["./src/db/schema.ts"],
+  out: './src/drizzle-migrations',
 } satisfies Config;

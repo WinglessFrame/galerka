@@ -3,7 +3,7 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   publicProcedure,
-  protectedProcedure,
+  // protectedProcedure,
 } from "@/server/api/trpc";
 
 import { example } from "@/db/schema";
@@ -17,11 +17,12 @@ export const exampleRouter = createTRPCRouter({
       };
     }),
 
-  getExample: publicProcedure.query(({ ctx }) => {
-    return ctx.db.select().from(example);
+  getExample: publicProcedure.query(async ({ ctx }) => {
+    const examples = await ctx.db.select().from(example);
+    return examples
   }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
+  // getSecretMessage: protectedProcedure.query(() => {
+  //   return "you can now see this secret message!";
+  // }),
 });
